@@ -6,7 +6,9 @@
       </list-item-icon>
       <list-item-content>
         <list-item-content-title>Изменить</list-item-content-title>
-        <list-item-content-subtitle>Изменить данного члена семьи</list-item-content-subtitle>
+        <list-item-content-subtitle
+          >Изменить данного члена семьи</list-item-content-subtitle
+        >
       </list-item-content>
     </list-item>
   </list>
@@ -22,6 +24,4 @@ import ListItemContentTitle from "../../UI/ListItems/ListItemContentTitle.vue";
 import ListItemContentSubtitle from "../../UI/ListItems/ListItemContentSubtitle.vue";
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

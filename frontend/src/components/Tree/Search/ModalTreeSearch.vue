@@ -1,7 +1,11 @@
 <template>
   <modal>
     <div class="flex">
-      <text-field v-model="request" type="text" placeholder="Поиск"></text-field>
+      <text-field
+        v-model="request"
+        type="text"
+        placeholder="Поиск"
+      ></text-field>
       <button type="submit" class="flex inset-y-0 pl-4 items-center">
         <icon icon="mdi-magnify" class="text-indigo-500 text-4xl"></icon>
       </button>
@@ -14,8 +18,10 @@
     </template>
 
     <div class="pt-5">
-      <template v-for="result in searchResults">
-        <search-list v-if="result.condition" :items="result.items">{{ result.title }}</search-list>
+      <template v-for="(result, key) in searchResults" :key="key">
+        <search-list v-if="result.condition" :items="result.items">{{
+          result.title
+        }}</search-list>
       </template>
     </div>
   </modal>
@@ -27,47 +33,51 @@ import Modal from "../../UI/Modal.vue";
 import TextField from "../../UI/Input/TextField.vue";
 import SearchSettings from "./SearchSettings.vue";
 import SearchList from "./SearchList.vue";
-import {ref, computed} from "vue";
-import {useRoute} from "vue-router";
-import {useStore} from "vuex";
+import { useSearchStore } from "../../../stores/search";
+import { ref, computed } from "vue";
+import { useRoute } from "vue-router";
 
-const store = useStore()
-const route = useRoute()
+const store = useSearchStore();
+const route = useRoute();
 
 const request = computed({
   get() {
-    return store.getters.searchRequest
+    return store.searchRequest;
   },
   set(value) {
-    store.dispatch('setSearchRequest', value)
-  }
-})
+    store.setSearchRequest(value);
+  },
+});
 
-const settings = ref(false)
-const showSettings = computed(() => route.params.variant === 'all')
+const settings = ref(false);
+const showSettings = computed(() => route.params.variant === "all");
 function switchSettings() {
-  settings.value = !settings.value
+  settings.value = !settings.value;
 }
 
 const searchResults = computed(() => [
   {
     items: [],
-    title: 'Объекты на графе',
-    condition: (route.params.variant === 'all' || route.params.variant === 'graph') && store.getters.searchGraph
+    title: "Объекты на графе",
+    condition:
+      (route.params.variant === "all" || route.params.variant === "graph") &&
+      store.searchGraph,
   },
   {
-    items: store.getters.selfPeople,
-    title: 'Ваши объекты',
-    condition: (route.params.variant === 'all' || route.params.variant === 'self') && store.getters.searchSelf
+    items: store.selfPeople,
+    title: "Ваши объекты",
+    condition:
+      (route.params.variant === "all" || route.params.variant === "self") &&
+      store.searchSelf,
   },
   {
-    items: store.getters.globalPeople,
-    title: 'Объекты глобального поиска',
-    condition: (route.params.variant === 'all' || route.params.variant === 'global') && store.getters.searchGlobal
+    items: store.globalPeople,
+    title: "Объекты глобального поиска",
+    condition:
+      (route.params.variant === "all" || route.params.variant === "global") &&
+      store.searchGlobal,
   },
-])
+]);
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

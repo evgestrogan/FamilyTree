@@ -2,9 +2,6 @@
   <h1>Chat</h1>
 </template>
 
-<script setup>
-</script>
+<script setup></script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

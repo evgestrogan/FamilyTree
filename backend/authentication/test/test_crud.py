@@ -6,7 +6,7 @@ from authentication.functions import create_refresh_token
 from authentication.models import BaseRefreshToken
 from core.database.crud import Crud
 from core.database.driver import init_db
-from core.database.migrations import clear_tables, create_db_and_tables, drop_tables
+from core.database.migrations import clear_tables
 from user.models import UserDataBase
 
 

@@ -26,29 +26,26 @@ app_authentication = FastAPI(middleware=[Middleware(BaseHTTPMiddleware, dispatch
 
 @app_authentication.post('/registration', **registration_url_config.dict())
 async def registration_user(user: UserSchemaCreate) -> uuid.UUID | Response:
+    if len(user.password) < 8 or len(user.username) < 4:
+        return Response(status_code=status.HTTP_406_NOT_ACCEPTABLE)
+    password = hash_password(user.password)
     try:
-        if len(user.password) < 8 or len(user.username) < 4:
-            return Response(status_code=status.HTTP_406_NOT_ACCEPTABLE)
-        password = hash_password(user.password)
-        try:
-            new_user_id = await Crud.save(UserDataBase(username=user.username, password=password, email=user.email))
-        except IntegrityError:
-            return Response(status_code=status.HTTP_409_CONFLICT)
-        try:
-            registration_token = create_registration_token(new_user_id).replace('.', '|')
-            recovery_link = 'http://127.0.0.1:3000/'
-            mail.send_message(
-                user.email,
-                'Activate account FamilyTree',
-                f"For account activating click the link <a href=\"{recovery_link}{registration_token}\">link</a>"
-            )
-            return new_user_id
-        except Exception as e:
-            new_user = await Crud.get(select(UserDataBase).where(UserDataBase.id == new_user_id))
-            await Crud.delete(new_user)
-            raise e
-    except UniqueIndexException as e:
-        raise NotUniqueIndex(e)
+        new_user_id = await Crud.save(UserDataBase(username=user.username, password=password, email=user.email))
+    except IntegrityError:
+        return Response(status_code=status.HTTP_409_CONFLICT)
+    try:
+        registration_token = create_registration_token(new_user_id).replace('.', '|')
+        recovery_link = 'http://127.0.0.1:5173/'
+        mail.send_message(
+            user.email,
+            'Activate account FamilyTree',
+            f"For account activating click the link <a href=\"{recovery_link}{registration_token}\">link</a>"
+        )
+        return new_user_id
+    except Exception as e:
+        new_user = await Crud.get(select(UserDataBase).where(UserDataBase.id == new_user_id))
+        await Crud.delete(new_user)
+        raise e
 
 
 @app_authentication.put('/activate/{registration_token}', **activate_url_config.dict())
@@ -114,10 +111,10 @@ async def logout(request: Request, response: Response) -> Response | None:
 
 @app_authentication.post('/start_recovery_password')
 async def start_recovery_password(data: RecoveryPasswordSchema) -> Response:
-    data_base_user = await Crud.get(select(UserDataBase).where(UserDataBase.email == data.email))
+    data_base_user: UserDataBase = await Crud.get(select(UserDataBase).where(UserDataBase.email == data.email))
     if data_base_user:
-        password_recovery_token = create_password_recovery_token(data_base_user['id']).replace('.', '|')
-        recovery_link = 'http://127.0.0.1:3000/forgot/'
+        password_recovery_token = create_password_recovery_token(data_base_user.id).replace('.', '|')
+        recovery_link = 'http://127.0.0.1:5173/forgot/'
         mail.send_message(
             data.email,
             'Recovery password',

@@ -13,14 +13,14 @@
 
 <script setup>
 import AlertItem from "./AlertItem.vue";
-import {useStore} from 'vuex';
+import { useNotificationStore } from "../../../stores/notification";
 
-const store = useStore()
+const store = useNotificationStore();
 
-const alerts = store.getters.alerts
+const alerts = store.alerts;
 
 function remove(alert) {
-  store.dispatch('removeAlert', alert)
+  store.removeAlert(alert);
 }
 </script>
 

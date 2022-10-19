@@ -1,17 +1,20 @@
 <template>
   <transition name="sidebar">
-    <aside v-show="mobileSideBar" class="sm:!block absolute sm:sticky bg-white sm:h-full h-main z-10">
+    <aside
+      v-show="mobileSideBar"
+      class="sm:!block absolute sm:sticky bg-white sm:h-full h-main z-10"
+    >
       <slot></slot>
     </aside>
   </transition>
 </template>
 
 <script setup>
-import {computed} from "vue";
-import {useStore} from "vuex";
+import { computed } from "vue";
+import { useSettingStore } from "../../stores/setting";
 
-const store = useStore()
-const mobileSideBar = computed(() => store.getters.mobileSideBar)
+const store = useSettingStore();
+const mobileSideBar = computed(() => store.mobileSideBar);
 </script>
 
 <style scoped>

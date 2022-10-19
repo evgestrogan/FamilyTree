@@ -1,6 +1,6 @@
 <template>
   <form class="mt-8 space-y-6" @submit.prevent="confirmForgotPassword">
-    <input type="hidden" name="remember" value="true">
+    <input type="hidden" name="remember" value="true" />
     <div class="rounded-md shadow-sm -space-y-px">
       <text-field
         v-model="email"
@@ -20,18 +20,16 @@
 <script setup>
 import TextField from "../UI/Input/TextField.vue";
 import Btn from "../UI/Button/Btn.vue";
-import {useStore} from 'vuex';
-import {ref} from "vue";
+import { useAuthorizationStore } from "../../stores/authorization";
+import { ref } from "vue";
 
-const store = useStore()
+const store = useAuthorizationStore();
 
-const email = ref("")
+const email = ref("");
 
 function confirmForgotPassword() {
-  store.dispatch('forgotPasswordEmail', email.value)
+  store.forgotPasswordEmail(email.value);
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -10,7 +12,7 @@ engine = None
 
 def init_db():
     global engine
-    engine = create_async_engine(database_url, echo=True, future=True)
+    engine = create_async_engine(database_url, future=True)
 
 
 def get_engine():
@@ -18,11 +20,18 @@ def get_engine():
     return engine
 
 
+@asynccontextmanager
 async def get_session() -> AsyncSession:
-    async_session = sessionmaker(
-        get_engine(), class_=AsyncSession, expire_on_commit=False
-    )
-    async with async_session() as session:
-        return session
+    try:
+        async_session = sessionmaker(
+            get_engine(), class_=AsyncSession
+        )
+        async with async_session() as session:
+            yield session
+    except Exception as e:
+        await session.rollback()
+        raise e
+    finally:
+        await session.close()
 
 

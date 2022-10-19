@@ -3,16 +3,12 @@
     <list>
       <list-item class="border-y my-1">
         <list-item-content class="whitespace-nowrap">
-          <list-item-content-title>
-            Profile
-          </list-item-content-title>
+          <list-item-content-title> Profile </list-item-content-title>
         </list-item-content>
       </list-item>
       <list-item class="border-y my-1">
         <list-item-content class="whitespace-nowrap">
-          <list-item-content-title>
-            About
-          </list-item-content-title>
+          <list-item-content-title> About </list-item-content-title>
         </list-item-content>
       </list-item>
     </list>
@@ -24,10 +20,6 @@ import List from "../UI/ListItems/List.vue";
 import ListItem from "../UI/ListItems/ListItem.vue";
 import ListItemContent from "../UI/ListItems/ListItemContent.vue";
 import ListItemContentTitle from "../UI/ListItems/ListItemContentTitle.vue";
-import ListItemContentSubtitle from "../UI/ListItems/ListItemContentSubtitle.vue";
-import ListItemAction from "../UI/ListItems/ListItemAction.vue";
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

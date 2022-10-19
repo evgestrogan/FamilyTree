@@ -40,5 +40,11 @@ def load_config(path: str) -> dict:
             return yaml.safe_load(outfile)
 
 
-project_config = load_config(os.environ['config_path'])
+applications = [
+    'authentication',
+    'user'
+]
+
+
+project_config = load_config(os.environ.get('config_path', 'config.yaml'))
 

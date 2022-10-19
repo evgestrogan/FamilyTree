@@ -33,3 +33,4 @@ class Mail:
 
 mail = Mail(mail_auth.mail_user, mail_auth.mail_host, mail_auth.mail_port)
 
+
