@@ -2,19 +2,23 @@
   <drop-down v-model="dropdown" close-on-click>
     <template v-slot:activator>
       <text-field
-          v-model="request"
-          @focusin="dropdown = true"
-          type="text"
-          class="py-2.5 px-10"
-          placeholder="Поиск"
+        v-model="request"
+        @focusin="dropdown = true"
+        type="text"
+        class="!py-2.5 !px-10"
+        placeholder="Поиск"
       ></text-field>
       <router-link :to="requestLink">
-        <button @click="clearRequest" type="submit" class="flex absolute inset-y-0 left-2 items-center">
+        <button
+          @click="clearRequest"
+          type="submit"
+          class="flex absolute inset-y-0 left-2 items-center"
+        >
           <icon icon="mdi-magnify" class="text-indigo-500"></icon>
         </button>
       </router-link>
     </template>
-    <template v-slot:body="{ close }">
+    <template v-slot:body>
       <div class="hidden sm:block">
         <div>
           <button @click.stop="switchSettings" class="w-full hover:bg-gray-100">
@@ -23,12 +27,12 @@
           <search-settings v-show="settings"></search-settings>
         </div>
         <div @click.prevent="clearRequest">
-          <div v-for="result in searchResults">
+          <div v-for="result in searchResults" :key="result.variant">
             <search-list
-                v-if="result.condition"
-                :items="result.items"
-                :variant="result.variant"
-                :limit="result.limit"
+              v-if="result.condition"
+              :items="result.items"
+              :variant="result.variant"
+              :limit="result.limit"
             >
               {{ result.title }}
             </search-list>
@@ -50,62 +54,60 @@ import TextField from "../../UI/Input/TextField.vue";
 import SearchSettings from "./SearchSettings.vue";
 import SearchList from "./SearchList.vue";
 import Btn from "../../UI/Button/Btn.vue";
-import {ref, computed} from "vue";
-import {useStore} from "vuex";
+import { useSearchStore } from "../../../stores/search";
+import { ref, computed } from "vue";
 
-const store = useStore()
+const store = useSearchStore();
 
-const requestLink = {name: 'Search', params: {variant: 'all'}}
-const searchRequest = ref('')
+const requestLink = { name: "Search", params: { variant: "all" } };
+const searchRequest = ref("");
 const request = computed({
   get() {
-    return searchRequest.value
+    return searchRequest.value;
   },
   set(value) {
-    store.dispatch('setSearchRequest', value)
-    searchRequest.value = value
-  }
-})
+    store.setSearchRequest(value);
+    searchRequest.value = value;
+  },
+});
 function clearRequest() {
-  searchRequest.value = ''
-  closeDropdown()
+  searchRequest.value = "";
+  closeDropdown();
 }
 
-const dropdown = ref(false)
+const dropdown = ref(false);
 function closeDropdown() {
-  dropdown.value = false
+  dropdown.value = false;
 }
 
-const settings = ref(false)
+const settings = ref(false);
 function switchSettings() {
-  settings.value = !settings.value
+  settings.value = !settings.value;
 }
 
 const searchResults = computed(() => [
   {
     items: [],
-    variant: 'graph',
+    variant: "graph",
     limit: 2,
-    title: 'Объекты на графе',
-    condition: store.getters.searchGraph
+    title: "Объекты на графе",
+    condition: store.searchGraph,
   },
   {
-    items: store.getters.selfPeople,
-    variant: 'self',
+    items: store.selfPeople,
+    variant: "self",
     limit: 2,
-    title: 'Ваши объекты',
-    condition: store.getters.searchSelf
+    title: "Ваши объекты",
+    condition: store.searchSelf,
   },
   {
-    items: store.getters.globalPeople,
-    variant: 'global',
+    items: store.globalPeople,
+    variant: "global",
     limit: 2,
-    title: 'Объекты глобального поиска',
-    condition: store.getters.searchGlobal
+    title: "Объекты глобального поиска",
+    condition: store.searchGlobal,
   },
-])
+]);
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

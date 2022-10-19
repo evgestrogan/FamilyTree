@@ -1,10 +1,14 @@
-import asyncio
+import importlib
 
 from sqlmodel import SQLModel
 
-from core.database.driver import get_engine, init_db
-from user import models
-from authentication import models
+from core.additional import get_models
+from core.database.driver import get_engine
+
+
+models_list = get_models()
+for model in models_list:
+    importlib.import_module(model)
 
 
 async def create_db_and_tables() -> None:
@@ -23,8 +27,6 @@ async def clear_tables() -> None:
             await conn.execute(table.delete())
 
 
-if __name__ == "__main__":
-    init_db()
-    loop = asyncio.get_event_loop()
-    coroutine = create_db_and_tables()
-    loop.run_until_complete(coroutine)
+
+
+

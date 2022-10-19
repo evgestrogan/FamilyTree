@@ -3,9 +3,7 @@
 </template>
 
 <script setup>
-const props = defineProps(['icon'])
+const props = defineProps(["icon"]);
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

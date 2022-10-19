@@ -13,3 +13,4 @@ class MailAuth(BaseSettings):
 
 
 mail_auth = MailAuth()
+

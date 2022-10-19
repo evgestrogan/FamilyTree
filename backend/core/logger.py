@@ -1,4 +1,5 @@
 import logging.handlers
+import os
 import uuid
 
 from starlette.datastructures import URL
@@ -30,6 +31,7 @@ def get_error_logger():
     return error_logger
 
 
+os.makedirs(project_config['log']['path'], exist_ok=True)
 request_logger = get_request_logger()
 error_logger = get_error_logger()
 

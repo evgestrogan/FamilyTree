@@ -1,18 +1,23 @@
-import {createApp} from 'vue';
-import App from './App.vue';
-import store from './store';
+import { createApp } from "vue";
+import { createPinia } from "pinia";
+
+import App from "./App.vue";
 import router from "./router";
-import axios from './plugins/axios';
-import VueAxios from 'vue-axios';
+import axios from "./plugins/axios";
+import VueAxios from "vue-axios";
 import vClickOutside from "click-outside-vue3";
 import VNetworkGraph from "v-network-graph";
-import "v-network-graph/lib/style.css";
-import './index.css';
 
-createApp(App)
-    .use(store)
-    .use(router)
-    .use(VueAxios, axios)
-    .use(vClickOutside)
-    .use(VNetworkGraph)
-    .mount('#app')
+import "@mdi/font/css/materialdesignicons.css";
+import "v-network-graph/lib/style.css";
+import "./assets/main.css";
+
+const app = createApp(App);
+
+app.use(createPinia());
+app.use(router);
+app.use(VueAxios, axios);
+app.use(vClickOutside);
+app.use(VNetworkGraph);
+
+app.mount("#app");

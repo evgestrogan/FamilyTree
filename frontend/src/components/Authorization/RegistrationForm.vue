@@ -1,6 +1,6 @@
 <template>
   <form class="mt-8 space-y-6" @submit.prevent="confirmRegistration">
-    <input type="hidden" name="remember" value="true">
+    <input type="hidden" name="remember" value="true" />
     <div class="rounded-md shadow-sm -space-y-px">
       <text-field
         v-model="username"
@@ -50,27 +50,25 @@
 <script setup>
 import TextField from "../UI/Input/TextField.vue";
 import Btn from "../UI/Button/Btn.vue";
-import {useStore} from 'vuex';
-import {ref} from "vue";
+import { ref } from "vue";
+import { useAuthorizationStore } from "../../stores/authorization";
 
-const store = useStore()
+const store = useAuthorizationStore();
 
-const username = ref("")
-const email = ref("")
-const password = ref("")
-const confirmPassword = ref("")
+const username = ref("");
+const email = ref("");
+const password = ref("");
+const confirmPassword = ref("");
 
 function confirmRegistration() {
-  if(password.value === confirmPassword.value) {
-    store.dispatch('registration', {
+  if (password.value === confirmPassword.value) {
+    store.registration({
       username: username.value,
       email: email.value,
-      password: password.value
-    })
+      password: password.value,
+    });
   }
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

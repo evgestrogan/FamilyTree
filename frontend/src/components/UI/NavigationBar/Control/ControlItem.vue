@@ -18,13 +18,11 @@ import ListItemContent from "../../ListItems/ListItemContent.vue";
 import ListItemContentTitle from "../../ListItems/ListItemContentTitle.vue";
 import ListItemContentSubtitle from "../../ListItems/ListItemContentSubtitle.vue";
 
-const {title, subtitle, icon} = defineProps({
+const { title, subtitle, icon } = defineProps({
   title: String,
   subtitle: String,
-  icon: String
-})
+  icon: String,
+});
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
