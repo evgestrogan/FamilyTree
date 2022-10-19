@@ -1,5 +1,8 @@
 .idea
+.env
+*.yaml
 __pycache__
 backend/poetry.lock
+backend/logs
 frontend/node_modules
 frontend/package-lock.json
