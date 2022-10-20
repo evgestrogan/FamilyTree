@@ -16,10 +16,6 @@
 
 </template>
 
-<script setup>
-import Card from "../UI/Card.vue";
-import TextField from "../UI/Input/TextField.vue";
-import Icon from "../UI/Icon.vue";
-</script>
+<script setup></script>
 
 <style scoped></style>
