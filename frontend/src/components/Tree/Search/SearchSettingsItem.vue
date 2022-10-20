@@ -9,7 +9,7 @@
       }}</list-item-content-subtitle>
     </list-item-content>
     <list-item-action>
-      <input v-model="value" type="checkbox" class="cursor-pointer" />
+      <input v-model="value" type="checkbox" class="cursor-pointer accent-indigo-600" />
     </list-item-action>
   </list-item>
 </template>

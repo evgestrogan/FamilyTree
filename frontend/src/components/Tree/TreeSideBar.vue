@@ -11,7 +11,7 @@
           </list-item-content-subtitle>
         </list-item-content>
         <list-item-action>
-          <input type="checkbox" class="w-5 h-5" />
+          <input type="checkbox" class="w-5 h-5 accent-indigo-600" />
         </list-item-action>
       </list-item>
     </list>

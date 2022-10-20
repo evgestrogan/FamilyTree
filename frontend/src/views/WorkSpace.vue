@@ -1,5 +1,5 @@
 <template>
-  <header class="h-16 drop-shadow-md">
+  <header class="h-16 shadow-md shadow-indigo-800/50">
     <nav-bar>
       <router-view
         name="navContent"
