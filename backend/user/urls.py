@@ -2,12 +2,13 @@ import uuid
 from typing import List
 
 from fastapi import FastAPI, Response, status
-from sqlalchemy.exc import IntegrityError
 from sqlmodel import select
 from starlette.middleware import Middleware
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from core.database.crud import Crud
+from core.exception.base_exeption import UniqueIndexException
+from core.exception.http_exeption import NotUniqueIndex
 from user.config import get_users_url_config, get_user_url_config, create_user_url_config, \
     update_user_url_config, delete_user_url_config
 from user.models import UserSchemaGet, UserSchemaCreate, UserDataBase, UpdateUserSchema
@@ -39,22 +40,23 @@ async def create_user(user: UserSchemaCreate) -> uuid.UUID | Response:
     password = hash_password(user.password)
     try:
         new_user = await Crud.save(UserDataBase(username=user.username, password=password, email=user.email))
+    except UniqueIndexException as e:
+        raise NotUniqueIndex(e)
+    else:
         return new_user
-    except IntegrityError:
-        return Response(status_code=status.HTTP_409_CONFLICT)
 
 
 @app_user.put('/{user_id}', **update_user_url_config.dict())
 async def update_user(user_id: str, user: UpdateUserSchema) -> uuid.UUID | Response:
     database_user: UserDataBase = await Crud.get(select(UserDataBase).where(UserDataBase.id == user_id))
     if database_user:
-        database_user.email = user.email if user.email else database_user.email
-        database_user.password = user.password if user.password else database_user.password
-        database_user.username = user.username if user.username else database_user.username
+        data_to_update = user.dict(exclude_unset=True)
+        for key, value in data_to_update.items():
+            setattr(database_user, key, value)
         try:
             return await Crud.save(database_user)
-        except IntegrityError:
-            return Response(status_code=status.HTTP_409_CONFLICT)
+        except UniqueIndexException as e:
+            raise NotUniqueIndex(e)
     else:
         return Response(status_code=status.HTTP_204_NO_CONTENT)
 

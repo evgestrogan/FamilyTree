@@ -5,16 +5,12 @@ from httpx import AsyncClient
 from sqlmodel import select
 
 from core.database.crud import Crud
-from core.database.driver import init_db
 from core.database.migrations import clear_tables
 from main import app
 from user.models import UserDataBase
 
 
 class UserApiTestCase(IsolatedAsyncioTestCase):
-
-    async def asyncSetUp(self):
-        init_db()
 
     async def asyncTearDown(self):
         await clear_tables()
@@ -91,7 +87,7 @@ class UserApiTestCase(IsolatedAsyncioTestCase):
         async with AsyncClient(app=app, base_url="http://127.0.0.1") as ac:
             response = await ac.put(f"/user/{user_id}", json=data)
         self.assertEqual(response.status_code, 201)
-        update_user_id = response.content.decode("utf-8").replace('\"','')
+        update_user_id = response.content.decode("utf-8").replace('\"', '')
         self.assertEqual(update_user_id, str(user_id))
         database_user: UserDataBase = await Crud.get(select(UserDataBase).where(UserDataBase.id == user_id))
         self.assertEqual(database_user.username, 'andrey')

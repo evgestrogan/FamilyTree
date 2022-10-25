@@ -2,7 +2,6 @@ import uuid
 
 from fastapi import FastAPI, Response, status
 from jose import JWTError
-from sqlalchemy.exc import IntegrityError
 from sqlmodel import select
 from starlette.middleware import Middleware
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -14,10 +13,11 @@ from authentication.models import LoginUserSchema, UpdatePasswordSchema, Recover
 from authentication.functions import hash_password, create_registration_token, create_login_token, \
     new_refresh_token, get_refresh_cookies_age, update_refresh_token, create_password_recovery_token
 from core.additional import decode_token
+from core.config import recovery_link
 from core.database.crud import Crud
 from core.email.driver import mail
 from core.exception.base_exeption import UniqueIndexException
-from core.exception.http_exeption import NotUniqueIndex, TokenError
+from core.exception.http_exeption import TokenError, NotUniqueIndex
 from core.middleware import error_handler_middleware
 from user.models import UserSchemaCreate, UserDataBase
 
@@ -31,11 +31,10 @@ async def registration_user(user: UserSchemaCreate) -> uuid.UUID | Response:
     password = hash_password(user.password)
     try:
         new_user_id = await Crud.save(UserDataBase(username=user.username, password=password, email=user.email))
-    except IntegrityError:
-        return Response(status_code=status.HTTP_409_CONFLICT)
+    except UniqueIndexException as e:
+        raise NotUniqueIndex(e)
     try:
         registration_token = create_registration_token(new_user_id).replace('.', '|')
-        recovery_link = 'http://127.0.0.1:5173/'
         mail.send_message(
             user.email,
             'Activate account FamilyTree',
@@ -114,11 +113,10 @@ async def start_recovery_password(data: RecoveryPasswordSchema) -> Response:
     data_base_user: UserDataBase = await Crud.get(select(UserDataBase).where(UserDataBase.email == data.email))
     if data_base_user:
         password_recovery_token = create_password_recovery_token(data_base_user.id).replace('.', '|')
-        recovery_link = 'http://127.0.0.1:5173/forgot/'
         mail.send_message(
             data.email,
             'Recovery password',
-            f"For change the password click the link <a href=\"{recovery_link}{password_recovery_token}\">link</a>"
+            f"For change the password click the link <a href=\"{recovery_link}forgot/{password_recovery_token}\">link</a>"
         )
         return Response(status_code=status.HTTP_200_OK)
     else:
@@ -149,6 +147,7 @@ async def recovery_password(password_recovery_token: str, data: UpdatePasswordSc
         if user:
             user.password = password
             await Crud.save(user)
+            return Response(status_code=status.HTTP_200_OK)
         else:
             return Response(status_code=status.HTTP_406_NOT_ACCEPTABLE)
     else:

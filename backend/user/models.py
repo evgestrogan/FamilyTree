@@ -1,7 +1,5 @@
-from typing import List
-
 from pydantic import EmailStr
-from sqlmodel import SQLModel, Field, Relationship
+from sqlmodel import SQLModel, Field
 
 from core.database.models import BaseModel
 
@@ -21,7 +19,6 @@ class UserSchemaCreate(BaseUserSchema):
 
 class UserDataBase(UserSchemaGet, table=True):
     password: bytes
-    refresh_tokens: List['BaseRefreshToken'] = Relationship(back_populates="user")
 
 
 class UpdateUserSchema(SQLModel):
